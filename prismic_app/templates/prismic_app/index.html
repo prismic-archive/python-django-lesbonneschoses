@@ -1,11 +1,41 @@
-{% if documents %}
-    <ul>
-    {% for document in documents %}
-        <li>
-          <a href="{% url 'prismic:document' id=document.id slug=document.slug %}">
-            {{ document.slug }}
-          </a>
-        </li>
-	{% endfor %}
-    </ul>
-{% endif %}
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}home{% endblock %}
+{% block content %}
+  <section id="caroussel">
+
+    <nav>
+      <ul>
+        {% for category in product_categories %}
+            <li><a>{{ category }}</a></li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <div class="products">
+      {% for category in product_categories %}
+        <ul>
+          {% for product in products %}
+            {% if category in product.tags and "Featured" not in product.tags %}
+                <li data-category="{{category}}">
+                  <a href="{% url 'prismic:product' id=product.id slug=product.slug %}">
+                    <img src="{% filter default:"images/missing-image.png" %}{% pget_image product "product.image" "icon" %}{% endfilter %}">
+                    <span>{% filter default:"Product" %}{% pget_text product "product.name" %}{% endfilter %}</span>
+                    <em>{% pget_number product "product.price" "%.2f$" %}</em>
+                  </a>
+                </li>
+            {% endif %}
+          {% endfor %}
+
+        </ul>
+      {% endfor %}
+
+    </div>
+
+    <p>
+      <a href="{% url 'prismic:products' %}">Browse all our products</a>
+    </p>
+
+  </section>
+
+{% endblock %}

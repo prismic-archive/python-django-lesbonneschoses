@@ -1,0 +1,49 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <title>Les bonnes choses {% block title %}My amazing site{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="{% static "stylesheets/normalize.min.css" %}">
+    <link rel="stylesheet" href="{% static "stylesheets/main.css" %}">
+    <link rel="stylesheet" href="{% static "stylesheets/toolbar.css" %}">
+
+    <script src="{% static "javascripts/modernizr-2.6.2.min.js" %}"></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1><a href="@routes.Application.index(ref = ctx.maybeRef)">Les bonnes choses</a></h1>
+
+        <ul>
+          <li><a class="selected">About</a></li>
+          <li><a>Stores</a></li>
+        </ul>
+        <ul>
+          <li><a>Jobs</a></li>
+          <li><a>Our Blog</a></li>
+        </ul>
+
+        <a><span>Search</span></a>
+
+      </nav>
+    </header>
+
+    <div class="main" id="{% block id %}{% endblock %}">
+      {% block content %}{% endblock %}
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{% static "javascripts/jquery-1.10.1.min.js" %}"><\/script>')</script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+    <script src="{% static "javascripts/catslider.js" %}"></script>
+    <script src="{% static "javascripts/main.js" %}"></script>
+  </body>
+</html>
