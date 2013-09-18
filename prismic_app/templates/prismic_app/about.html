@@ -1,0 +1,24 @@
+{% extends "prismic_app/main.html" %}
+
+{% load prismic_tags %}
+
+{% block id %}about{% endblock %}
+{% block title %}{% get_text about "article.title" %}{% endblock %}
+
+{% block content %}
+
+  <section id="page-header">
+
+    <div style="background-image: url({% get_image about "article.image" "main" %})">
+      <div>
+        <h1>{% get_text about "article.title" %}</h1>
+        {% get_html about "article.short_lede" context %} 
+      </div>
+    </div>
+
+  </section>
+
+  <section id="page-body">
+    {% get_html about "article.content" context %}
+  </section>
+{% endblock %}

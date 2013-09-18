@@ -3,16 +3,20 @@ from django.utils.safestring import mark_safe
 
 register = template.Library()
 
-@register.filter
-def as_html(object, prismic_context):
-    return mark_safe(object.as_html(prismic_context["link_resolver"]))
+@register.simple_tag
+def as_html(object, context):
+    return object.as_html(context["link_resolver"])
 
 @register.simple_tag
-def pget_text(document, field):
+def get_html(object, field, context):
+    return object.get_html(field, context["link_resolver"])
+
+@register.simple_tag
+def get_text(document, field):
     return document.get_text(field)
 
 @register.simple_tag
-def pget_number(document, field, format=None):
+def get_number(document, field, format=None):
     number = document.get_number(field).value
     if format:
         return format % number
@@ -20,6 +24,6 @@ def pget_number(document, field, format=None):
         return number
 
 @register.simple_tag
-def pget_image(document, field, view="main"):
+def get_image(document, field, view="main"):
     image = document.get_image(field, view)
     return image.url if image else None

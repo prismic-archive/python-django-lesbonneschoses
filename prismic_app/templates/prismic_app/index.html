@@ -19,9 +19,9 @@
             {% if category in product.tags and "Featured" not in product.tags %}
                 <li data-category="{{category}}">
                   <a href="{% url 'prismic:product' id=product.id slug=product.slug %}">
-                    <img src="{% filter default:"images/missing-image.png" %}{% pget_image product "product.image" "icon" %}{% endfilter %}">
-                    <span>{% filter default:"Product" %}{% pget_text product "product.name" %}{% endfilter %}</span>
-                    <em>{% pget_number product "product.price" "%.2f$" %}</em>
+                    <img src="{% filter default:"images/missing-image.png" %}{% get_image product "product.image" "icon" %}{% endfilter %}">
+                    <span>{% filter default:"Product" %}{% get_text product "product.name" %}{% endfilter %}</span>
+                    <em>{% get_number product "product.price" "%.2f$" %}</em>
                   </a>
                 </li>
             {% endif %}

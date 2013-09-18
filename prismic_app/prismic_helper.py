@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import Http404
 from django import template
 
-class Prismic_Helper(object):
+class PrismicHelper(object):
 
     def __init__(self, ref_id=None):
         self.api = prismic.get(
@@ -35,6 +35,9 @@ class Prismic_Helper(object):
         """Add context to the view dictionary"""
         return {"ref": self.ref, "link_resolver": self.link_resolver}
 
+    def get_bookmark(self, bookmark_id):
+        bookmark = self.api.bookmarks[bookmark_id]
+        return self.get_document(bookmark)
 
 #template.add_to_builtins("prismic_shortcuts.as_html")
 
