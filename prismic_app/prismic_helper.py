@@ -10,20 +10,20 @@ class PrismicHelper(object):
         self.api = prismic.get(
             settings.PRISMIC.get("api"), settings.PRISMIC.get("token"))
         self.link_resolver = views.link_resolver
-        self.form_name = "everything"
+        self.everything_form_name = "everything"
 
         if ref_id != None:
             self.ref = ref_id
         else:
-            self.ref = self.api.get_master().ref
+            self.ref = self.api.get_master()
 
     def form(self, name):
         form = self.api.form(name)
         form.ref(id=self.ref)
         return form
 
-    def get_document(self, document_id):
-        form = self.form(self.form_name)
+    def get_document(self, document_id, form_name="everything"):
+        form = self.form(form_name)
         form.query(r"""[[:d = at(document.id, "%s")]]""" % document_id)
         document = form.submit()
         if document:
@@ -37,19 +37,4 @@ class PrismicHelper(object):
 
     def get_bookmark(self, bookmark_id):
         bookmark = self.api.bookmarks[bookmark_id]
-        return self.get_document(bookmark)
-
-#template.add_to_builtins("prismic_shortcuts.as_html")
-
-    # // -- Helper: Retrieve several documents by Id
-    # def getDocuments(ids: String*)(implicit ctx: Prismic.Context): Future[Seq[Document]] = {
-    #   ids match {
-    #     case Nil => Future.successful(Nil)
-    #     case ids => ctx.api.forms("everything").query(s"""[[:d = any(document.id, ${ids.mkString("[\"","\",\"","\"]")})]]""").ref(ctx.ref).submit()
-    #   }
-    # }
-
-    # // -- Helper: Retrieve a single document from its bookmark
-    # def getBookmark(bookmark: String)(implicit ctx: Prismic.Context): Future[Option[Document]] = {
-    #   ctx.api.bookmarks.get(bookmark).map(id => getDocument(id)).getOrElse(Future.successful(None))
-    # }
+        return self.get_document(self.everything_form_name, bookmark)

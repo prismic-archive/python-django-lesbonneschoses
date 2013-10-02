@@ -12,13 +12,13 @@
     <div style="background-image: url({% get_image about "article.image" "main" %})">
       <div>
         <h1>{% get_text about "article.title" %}</h1>
-        {% get_html about "article.short_lede" context %} 
+        {% get_html about "article.short_lede" %} 
       </div>
     </div>
 
   </section>
 
   <section id="page-body">
-    {% get_html about "article.content" context %}
+    {% get_html about "article.content" %}
   </section>
 {% endblock %}
