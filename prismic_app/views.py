@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from prismic_helper import PrismicHelper
+#import logging
+
+#logging.basicConfig(level=logging.DEBUG)
 
 product_categories = {
     "Macaron": "Macarons",
