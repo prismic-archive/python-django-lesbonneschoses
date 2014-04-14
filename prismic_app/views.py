@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from prismic_helper import PrismicHelper
@@ -114,4 +115,18 @@ def product(request, id, slug):
 
 
 def products_by_flavour(request):
-    pass
+    raise Http404
+
+
+# -- Stores
+
+
+def stores(request):
+    raise Http404
+
+
+# -- Blog
+
+
+def blog(request):
+    raise Http404
