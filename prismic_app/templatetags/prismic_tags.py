@@ -4,17 +4,21 @@ register = template.Library()
 
 context_name = "context"
 
+
 @register.simple_tag(takes_context=True)
 def as_html(context, object):
     return object.as_html(context[context_name]["link_resolver"])
+
 
 @register.simple_tag(takes_context=True)
 def get_html(context, object, field):
     return object.get_html(field, context[context_name]["link_resolver"])
 
+
 @register.simple_tag
 def get_text(document, field):
     return document.get_text(field)
+
 
 @register.simple_tag
 def get_number(document, field, format=None):
@@ -23,6 +27,17 @@ def get_number(document, field, format=None):
         return format % number
     else:
         return number
+
+
+@register.simple_tag
+def get_first_paragraph(document, field):
+    stext = document.get_structured_text(field)
+    print stext
+    if stext is not None:
+        return stext.get_first_paragraph().text
+    else:
+        return ""
+
 
 @register.simple_tag
 def get_image(document, field, view="main"):

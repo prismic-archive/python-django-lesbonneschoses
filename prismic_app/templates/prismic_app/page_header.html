@@ -1,0 +1,12 @@
+{% load prismic_tags %}
+
+  <section id="page-header">
+
+    <div style="background-image: url({% get_image page "article.image" %})">
+      <div>
+        <h1>{% get_text page "article.title" %}</h1>
+        {% get_html page "article.short_lede" %}
+      </div>
+    </div>
+
+  </section>

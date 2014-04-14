@@ -7,16 +7,7 @@
 
 {% block content %}
 
-  <section id="page-header">
-
-    <div style="background-image: url({% get_image about "article.image" "main" %})">
-      <div>
-        <h1>{% get_text about "article.title" %}</h1>
-        {% get_html about "article.short_lede" %} 
-      </div>
-    </div>
-
-  </section>
+{% include "prismic_app/page_header.html" with page=about %}
 
   <section id="page-body">
     {% get_html about "article.content" %}

@@ -1,7 +1,7 @@
-from django.http import Http404
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from prismic_helper import PrismicHelper
+import collections
 #import logging
 
 #logging.basicConfig(level=logging.DEBUG)
@@ -45,6 +45,29 @@ def about(request):
 
     about_doc = prismic.get_bookmark("about")
     return render(request, 'prismic_app/about.html', {'context': context, 'about': about_doc})
+
+
+def jobs(request):
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    jobs_doc = prismic.get_bookmark("jobs")
+    services = collections.OrderedDict()
+    services["Store"] = []
+    services["Office"] = []
+    services["Workshop"] = []
+    services["Other"] = []
+    for j in prismic.form("jobs").ref(context["ref"]).submit().documents:
+        service = j.get_text("job-offer.service")
+        if service in services:
+            services[service].append(j)
+        else:
+            services["Other"].append(j)
+    return render(request, 'prismic_app/jobs.html', {'context': context, 'jobs': jobs_doc, 'services': services})
+
+
+def job(request, id, slug):
+    pass
 
 
 def products(request):
