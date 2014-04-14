@@ -121,8 +121,35 @@ def products_by_flavour(request):
 # -- Stores
 
 
+WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
 def stores(request):
-    raise Http404
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    all_stores = sorted(prismic.form("stores").ref(context["ref"]).submit().documents,
+                          key=lambda p: p.get_text("store.name"))
+    return render(request, 'prismic_app/stores.html', {
+        'context': context,
+        'main': prismic.get_bookmark("stores"),
+        'stores': all_stores})
+
+
+def store(request, id, slug):
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    the_store = prismic.get_document(id)
+    print the_store
+    print the_store.get_text("store.monday")
+    openings = map(lambda day: [day, the_store.get_text("store.%s[0]" % day.lower())], WEEKDAYS)
+    return render(request, 'prismic_app/store_detail.html', {
+        'context': context,
+        'main': prismic.get_bookmark("stores"),
+        'store': the_store,
+        'openings': openings
+        })
 
 
 # -- Blog

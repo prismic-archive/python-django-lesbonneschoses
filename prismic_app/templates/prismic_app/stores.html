@@ -1,0 +1,18 @@
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}stores{% endblock %}
+{% block content %}
+
+{% include "prismic_app/page_header.html" with page=main %}
+
+<section id="page-body">
+  {% get_html main "article.content" %}
+
+  {% for store in stores %}
+    <article class="store" style="background-image: url({% get_image store "store.image" "medium" %})">
+      <a href="{% url "prismic:store" id=store.id slug=store.slug %}"><h3>{% get_text store "store.name" %}</h3></a>
+    </article>
+  {% endfor %}
+</section>
+
+{% endblock %}

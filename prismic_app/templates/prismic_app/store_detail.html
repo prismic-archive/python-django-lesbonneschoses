@@ -1,0 +1,43 @@
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}store{% endblock %}
+{% block content %}
+
+
+<section id="page-header">
+
+  <div style="background-image: url({% get_image store "store.image" %})">
+    <div>
+      <h1>{% get_text store "store.name" %}</h1>
+      {% get_html store "store.description" %}
+    </div>
+  </div>
+
+</section>
+
+<section id="page-body">
+
+  <div id="map-canvas" style="width:400px; height: 300px"></div>
+
+  <p class="address">
+    {% get_text store "store.address" %}<br>
+    {% get_text store "store.address2" %}<br>
+    {% get_text store "store.city" %}<br>
+    {% get_text store "store.zipcode" %}<br>
+    {% get_text store "store.country" %}<br>
+  </p>
+
+  <aside>
+
+    <h4>Opening times</h4>
+
+    {% for day in openings %}
+      <dl>
+        <dt>{{ day.0 }}</dt>
+        <dd>{{ day.1 }}</dd>
+      </dl>
+    {% endfor %}
+
+  </aside>
+
+{% endblock %}

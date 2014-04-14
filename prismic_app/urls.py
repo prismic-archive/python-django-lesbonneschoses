@@ -10,6 +10,7 @@ urlpatterns = patterns('',
                        url(r'^products/by-flavour', views.products_by_flavour),
                        url(r'^jobs/(?P<id>[-_a-zA-Z0-9]{16})/(?P<slug>.*)', views.job, name='job'),
                        url(r'^jobs/', views.jobs, name='jobs'),
+                       url(r'^stores/(?P<id>[-_a-zA-Z0-9]{16})/(?P<slug>.*)', views.store, name='store'),
                        url(r'^stores/', views.stores, name='stores'),
                        url(r'^blog', views.stores, name='blog')
                        )
