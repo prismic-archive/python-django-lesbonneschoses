@@ -1,0 +1,67 @@
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}product{% endblock %}
+{% block content %}
+
+  <section id="detail">
+
+    <div>
+
+      <img src="{{ image_url }}"/>
+
+      <h4>
+        <strong>{{ product_name|default:"Missing product name" }}</strong>
+        <em>${{ price|floatformat:2 }}</em>
+      </h4>
+
+      <h2>
+        {{ summary|default:"Product" }}
+      </h2>
+
+      {{ description|safe|default:"" }}
+
+      <p>
+        <a href="/products/by-flavour?flavour={{ flavour }}">
+          <strong class="color" style="background: {{ color }}">{{ color }}</strong>
+        </a>
+      </p>
+
+    </div>
+
+    <p>
+      <a href="/products">Browse all our products</a>
+    </p>
+
+  </section>
+
+  {% if gallery_url %}
+    <section id="gallery" style="background-image: url({{ gallery_url }})"></section>
+  {% endif %}
+
+  {% if author and quote %}
+    <section id="quote">
+      <blockquote>{{ quote }} <strong>said {{ author }}</strong></blockquote>
+    </section>
+  {% endif %}
+
+  {% if related %}
+      <section id="related" class="products">
+
+        <h2>You might like these as well</h2> 
+
+        <ul>
+          {% for r in related %}
+            <li data-category="@product.tags.filter(Application.ProductCategories.contains).headOption">
+              <a href="/product/{{ r.0 }}/{{ r.2 }}">
+                <img src="{{ r.3|default:'images/missing-image.png' }}">
+                <span>{{ r.1|default:"Product" }}</span>
+                <em>${{ r.4|floatformat:2 }}</em>
+              </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+      </section>
+    {% endif %}
+
+{% endblock %}

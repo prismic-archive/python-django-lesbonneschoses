@@ -2,7 +2,7 @@ import prismic
 import views
 from django.conf import settings
 from django.http import Http404
-from django import template
+
 
 class PrismicHelper(object):
 
@@ -12,7 +12,7 @@ class PrismicHelper(object):
         self.link_resolver = views.link_resolver
         self.everything_form_name = "everything"
 
-        if ref_id != None:
+        if ref_id is not None:
             self.ref = ref_id
         else:
             self.ref = self.api.get_master()
@@ -22,10 +22,16 @@ class PrismicHelper(object):
         form.ref(self.ref)
         return form
 
+    def get_documents(self, document_ids, form_name="everything"):
+        form = self.form(form_name)
+        ids = ",".join(map(lambda i: "\"%s\"" % i, document_ids))
+        form.query(r"""[[:d = any(document.id, [%s])]]""" % ids)
+        return form.submit().documents
+
     def get_document(self, document_id, form_name="everything"):
         form = self.form(form_name)
         form.query(r"""[[:d = at(document.id, "%s")]]""" % document_id)
-        document = form.submit()
+        document = form.submit().documents
         if document:
             return document[0]
         else:
