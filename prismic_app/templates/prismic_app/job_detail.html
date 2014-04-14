@@ -1,15 +1,27 @@
-@(main: io.prismic.Document, job: io.prismic.Document)(implicit ctx: Prismic.Context)
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}job{% endblock %}
+{% block content %}
 
-@page(id = "job")(
-  title = job.getText("job-offer.name"),
-  image = main.getImage("article.image", "main").map(_.url)) {
 
+<section id="page-header">
+
+  <div style="background-image: url({% get_image main "article.image" %})">
+    <div>
+      <h1>{% get_text job "job-offer.name" %}</h1>
+    </div>
+  </div>
+
+</section>
+
+<section id="page-body">
   <h2>About you</h2>
 
-  @job.getHtml("job-offer.profile", ctx.linkResolver).map(Html.apply)
+  {% get_html job "job-offer.profile" %}
 
   <h2>Your responsibilities</h2>
 
-  @job.getHtml("job-offer.job_description", ctx.linkResolver).map(Html.apply)
+  {% get_html job "job-offer.job_description" %}
+</section>
 
-}
+{% endblock %}

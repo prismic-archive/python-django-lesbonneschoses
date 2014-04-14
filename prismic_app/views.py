@@ -47,6 +47,9 @@ def about(request):
     return render(request, 'prismic_app/about.html', {'context': context, 'about': about_doc})
 
 
+# -- Jobs
+
+
 def jobs(request):
     prismic = PrismicHelper()
     context = prismic.get_context()
@@ -67,7 +70,17 @@ def jobs(request):
 
 
 def job(request, id, slug):
-    pass
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    return render(request, 'prismic_app/job_detail.html', {
+        'context': context,
+        'main': prismic.get_bookmark("jobs"),
+        'job': prismic.get_document(id)
+    })
+
+
+# -- Products
 
 
 def products(request):
