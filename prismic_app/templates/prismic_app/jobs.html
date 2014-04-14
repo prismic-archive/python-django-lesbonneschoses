@@ -1,0 +1,39 @@
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}jobs{% endblock %}
+{% block content %}
+
+{% include "prismic_app/page_header.html" with page=jobs %}
+
+  <section id="page-body">
+  <div class="presentation">
+    {% get_html jobs "article.content" %}
+  </div>
+
+  {% for service, jobs in services.items %}
+
+      <h2>
+        {% if service == "Store" %}Positions in our Stores{% endif %}
+        {% if service == "Office" %}Positions in our Offices{% endif %}
+        {% if service == "Workshop" %}Positions in our Workshops{% endif %}
+        {% if service == "Other" %}Other positions{% endif %}
+      </h2>
+
+      <div class="listing">
+      {% for job in jobs %}
+        <div class="job">
+          <a href="{% url 'prismic:job' id=job.id slug=job.slug %}">
+            <h3>{% get_text job "job-offer.name" %}</h3>
+            <p>
+              {% get_first_paragraph job "job-offer.profile" %}
+            </p>
+            <strong>Learn more</strong>
+          </a>
+        </div>
+      {% endfor %}
+      </div>
+
+  {% endfor %}
+
+{% endblock %}
+</section>

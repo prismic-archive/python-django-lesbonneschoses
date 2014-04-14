@@ -1,0 +1,31 @@
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}products{% endblock %}
+{% block title %}Our products{% endblock %}
+{% block content %}
+
+  <section id="catalog">
+
+    <div class="products">
+
+      <ul>
+        {% for product in products %}
+          <li data-category="@product.tags.filter(Application.ProductCategories.contains).headOption">
+            <a href="{% url "prismic:product" id=product.id slug=product.slug %}">
+              <img src="{% get_image product "product.image" "icon" %}">
+              <span>{% get_text product "product.name" %}</span>
+              <em>${% get_number product "product.price" "%.2f" %}</em>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+    </div>
+
+    <p>
+      <a href="{% url "prismic:index" %}">Close the products list</a>
+    </p>
+
+  </section>
+
+{% endblock %}

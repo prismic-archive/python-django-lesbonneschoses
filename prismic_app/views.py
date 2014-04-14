@@ -71,7 +71,12 @@ def job(request, id, slug):
 
 
 def products(request):
-    pass
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    all_products = sorted(prismic.form("products").ref(context["ref"]).submit().documents,
+                          key=lambda p: p.get_text("product.name"))
+    return render(request, 'prismic_app/products.html', {'context': context, 'products': all_products})
 
 
 def product(request, id, slug):
@@ -85,7 +90,7 @@ def product(request, id, slug):
 
     related = prismic.get_documents(map(lambda d: d.id, product.get_all("product.related")))
 
-    return render(request, 'prismic_app/productDetail.html', {
+    return render(request, 'prismic_app/product_detail.html', {
         'context': context,
         'product': product,
         'summary': summary,
