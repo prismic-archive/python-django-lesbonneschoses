@@ -16,8 +16,9 @@ def get_html(context, object, field):
 
 
 @register.simple_tag
-def get_text(document, field):
-    return document.get_text(field)
+def get_text(document, field, default=""):
+    value = document.get_text(field)
+    return value if value is not None else default
 
 
 @register.simple_tag
@@ -30,16 +31,12 @@ def get_number(document, field, format=None):
 
 
 @register.simple_tag
-def get_first_paragraph(document, field):
+def get_first_paragraph(document, field, default=""):
     stext = document.get_structured_text(field)
-    print stext
-    if stext is not None:
-        return stext.get_first_paragraph().text
-    else:
-        return ""
+    return stext.get_first_paragraph().text if stext is not None else default
 
 
 @register.simple_tag
-def get_image(document, field, view="main"):
+def get_image(document, field, view="main", default="images/missing-image.png"):
     image = document.get_image(field, view)
-    return image.url if image else None
+    return image.url if image else default

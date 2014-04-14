@@ -7,21 +7,21 @@
 
     <div>
 
-      <img src="{{ image_url }}"/>
+      <img src="{% get_image product "product.image" %}"/>
 
       <h4>
-        <strong>{{ product_name|default:"Missing product name" }}</strong>
-        <em>${{ price|floatformat:2 }}</em>
+        <strong>{% get_text product "product.name" %}</strong>
+        <em>${% get_number product "product.price" "%.2f" %}</em>
       </h4>
 
       <h2>
         {{ summary|default:"Product" }}
       </h2>
 
-      {{ description|safe|default:"" }}
+      {% get_html product "product.description" %}
 
       <p>
-        <a href="/products/by-flavour?flavour={{ flavour }}">
+        <a href="/products/by-flavour?flavour={% get_text product "product.flavour" %}">
           <strong class="color" style="background: {{ color }}">{{ color }}</strong>
         </a>
       </p>
@@ -29,14 +29,10 @@
     </div>
 
     <p>
-      <a href="/products">Browse all our products</a>
+      <a href="{% url "prismic:products" %}">Browse all our products</a>
     </p>
 
   </section>
-
-  {% if gallery_url %}
-    <section id="gallery" style="background-image: url({{ gallery_url }})"></section>
-  {% endif %}
 
   {% if author and quote %}
     <section id="quote">
@@ -52,10 +48,10 @@
         <ul>
           {% for r in related %}
             <li data-category="@product.tags.filter(Application.ProductCategories.contains).headOption">
-              <a href="/product/{{ r.0 }}/{{ r.2 }}">
-                <img src="{{ r.3|default:'images/missing-image.png' }}">
-                <span>{{ r.1|default:"Product" }}</span>
-                <em>${{ r.4|floatformat:2 }}</em>
+              <a href="{% url "prismic:product" id=r.id slug=r.slug %}">
+                <img src="{% get_image r "product.image" "icon" %}">
+                <span>{% get_text r "product.name" %}</span>
+                <em>${% get_number r "product.price" "%.2f" %}</em>
               </a>
             </li>
             {% endfor %}

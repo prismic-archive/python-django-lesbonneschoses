@@ -79,37 +79,16 @@ def product(request, id, slug):
     context = prismic.get_context()
 
     product = prismic.get_document(id)
-    image_url = 'images/missing-image.png'
-    if product.get_image('product.image') is not None:
-        image_url = product.get_image('product.image').url
-    if product.get_image('product.gallery') is not None:
-        gallery_url = product.get_image('product.gallery').url
-    else:
-        gallery_url = None
     summary = product.get_text('product.short_lede')
     if summary is None:
         summary = product.get_text('product.name')
 
-    related_documents = prismic.get_documents(map(lambda d: d.id, product.get_all("product.related")))
-    related = map(lambda doc: [doc.id,
-                               doc.get_text("product.name"),
-                               doc.slug,
-                               doc.get_image("product.image", "icon").url,
-                               doc.get_text("product.price")
-                               ],
-                  related_documents)
+    related = prismic.get_documents(map(lambda d: d.id, product.get_all("product.related")))
 
     return render(request, 'prismic_app/productDetail.html', {
         'context': context,
         'product': product,
-        'product_name': product.get_text('product.name'),
-        'price': product.get_number("product.price"),
         'summary': summary,
-        'description': product.get_html('product.description', link_resolver),
-        'image_url': image_url,
-        'gallery_url': gallery_url,
-        'flavour': product.get_text('product.flavour'),
-        'color': product.get_text('product.color'),
         'author': product.get_text("product.testimonial_author"),
         'quote': product.get_text("product.testimonial_quote"),
         'related': related
