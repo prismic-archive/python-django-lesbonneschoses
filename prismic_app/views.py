@@ -178,5 +178,19 @@ def blog(request):
     })
 
 
-def blog_post(request):
-    raise Http404
+def blog_post(request, id, slug):
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    post = prismic.get_document(id)
+    related_posts = prismic.get_documents(map(lambda d: d.id, post.get_all("blog-post.relatedpost")))
+    related_products = prismic.get_documents(map(lambda d: d.id, post.get_all("blog-post.relatedproduct")))
+
+    return render(request, 'prismic_app/post_detail.html', {
+        'context': context,
+        'post': post,
+        'related_posts': related_posts,
+        'related_products': related_products,
+        'allow_comments': post.get_text("blog-post.allow_comments") == "Yes",
+        'post_url': request.build_absolute_uri(reverse('prismic:blog_post', args=[post.id, post.slug]))
+    })
