@@ -1,0 +1,26 @@
+{% extends "prismic_app/blog.html" %}
+{% load prismic_tags %}
+{% block content %}
+
+  <section id="posts">
+    {% for post in posts %}
+
+      <article>
+        <a href="{% url "prismic:blog_post" id=post.id slug=post.slug %}">
+          <em class="infos">
+              {% get_text post "blog-post.date" %} by {% get_text post "blog-post.author" %}
+          </em>
+          <h2>{% get_title post "blog-post.body" %}</h2>
+
+          <p>{% get_first_paragraph post "blog-post.body" %}</p>
+
+          <div style="background-image: url({% get_image post "blog-post.body" "main" %}); background-size: cover;"></div>
+
+          <strong>Read more</strong>
+        </a>
+      </article>
+
+      {% endfor %}
+  </section>
+
+{% endblock %}

@@ -12,6 +12,7 @@ urlpatterns = patterns('',
                        url(r'^jobs/', views.jobs, name='jobs'),
                        url(r'^stores/(?P<id>[-_a-zA-Z0-9]{16})/(?P<slug>.*)', views.store, name='store'),
                        url(r'^stores/', views.stores, name='stores'),
-                       url(r'^blog', views.stores, name='blog')
+                       url(r'^blog/(?P<id>[-_a-zA-Z0-9]{16})/(?P<slug>.*)', views.blog_post, name='blog_post'),
+                       url(r'^blog/', views.blog, name='blog')
                        )
 

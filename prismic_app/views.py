@@ -141,8 +141,6 @@ def store(request, id, slug):
     context = prismic.get_context()
 
     the_store = prismic.get_document(id)
-    print the_store
-    print the_store.get_text("store.monday")
     openings = map(lambda day: [day, the_store.get_text("store.%s[0]" % day.lower())], WEEKDAYS)
     return render(request, 'prismic_app/store_detail.html', {
         'context': context,
@@ -155,5 +153,30 @@ def store(request, id, slug):
 # -- Blog
 
 
+PRODUCT_CATEGORIES = {
+    "Macaron": "Macarons",
+    "Cupcake": "Cup Cakes",
+    "Pie": "Little Pies"
+}
+
+
 def blog(request):
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    category = request.GET.get('category')
+    if category is not None:
+        q = prismic.form("blog").query("""[[:d = at(my.blog-post.category, "%s")]]""" % category)
+    else:
+        q = prismic.form("blog")
+    posts = list(sorted(q.ref(context["ref"]).submit().documents,
+                        key=lambda post: post.get_date("blog-post.date")))[:10]
+    return render(request, 'prismic_app/posts.html', {
+        'context': context,
+        'categories': PRODUCT_CATEGORIES,
+        'posts': posts
+    })
+
+
+def blog_post(request):
     raise Http404

@@ -37,6 +37,12 @@ def get_first_paragraph(document, field, default=""):
 
 
 @register.simple_tag
+def get_title(document, field, default=""):
+    stext = document.get_structured_text(field)
+    return stext.get_title().text if stext is not None else default
+
+
+@register.simple_tag
 def get_image(document, field, view="main", default="images/missing-image.png"):
     image = document.get_image(field, view)
     return image.url if image else default

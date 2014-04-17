@@ -1,0 +1,51 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <title>Les bonnes choses @title.map(txt => s" – $txt")</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link rel="stylesheet" href="{% static "stylesheets/normalize.min.css" %}">
+    <link rel="stylesheet" href="{% static "stylesheets/blog.css" %}">
+    <link rel="stylesheet" href="{% static "stylesheets/toolbar.css" %}">
+
+    <script src="{% static "javascripts/modernizr-2.6.2.min.js" %}"></script>
+  </head>
+  <body {% if context.hasPrivilegedAccess %}class="toolbar"{% endif %}>
+
+    {% if context.hasPrivilegedAccess %}
+    {% include "prismic_app/toolbar.html" %}
+    {% endif %}
+
+    <header>
+
+      <a href="{% url 'prismic:index' %}">
+        <h1>Les Bonnes Choses</h1>
+      </a>
+
+      <nav>
+        <ul>
+          <li><a href="@routes.Application.blog(ref = ctx.maybeRef)">Home</a></li>
+          {% for key, label in categories.items %}
+            <li><a href="{% url "prismic:blog" %}?category={{ key }}">{{ label }}</a></li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+    </header>
+
+    <div class="main">
+      {% block content %}{% endblock %}
+    </div>
+
+    {% include "prismic_app/footer.html" %}
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="@routes.Assets.at("javascripts/jquery-1.10.1.min.js")"><\/script>')</script>
+  </body>
+</html>
