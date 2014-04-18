@@ -84,6 +84,13 @@ def job(request, id, slug):
 # -- Products
 
 
+PRODUCT_CATEGORIES = {
+    "Macaron": "Macarons",
+    "Cupcake": "Cup Cakes",
+    "Pie": "Little Pies"
+}
+
+
 def products(request):
     prismic = PrismicHelper()
     context = prismic.get_context()
@@ -153,11 +160,11 @@ def store(request, id, slug):
 # -- Blog
 
 
-PRODUCT_CATEGORIES = {
-    "Macaron": "Macarons",
-    "Cupcake": "Cup Cakes",
-    "Pie": "Little Pies"
-}
+BLOG_CATEGORIES = [
+    "Announcements",
+    "Do it yourself",
+    "Behind the scenes"
+]
 
 
 def blog(request):
@@ -173,7 +180,7 @@ def blog(request):
                         key=lambda post: post.get_date("blog-post.date")))[:10]
     return render(request, 'prismic_app/posts.html', {
         'context': context,
-        'categories': PRODUCT_CATEGORIES,
+        'categories': BLOG_CATEGORIES,
         'posts': posts
     })
 
@@ -188,6 +195,7 @@ def blog_post(request, id, slug):
 
     return render(request, 'prismic_app/post_detail.html', {
         'context': context,
+        'categories': BLOG_CATEGORIES,
         'post': post,
         'related_posts': related_posts,
         'related_products': related_products,

@@ -1,0 +1,66 @@
+{% extends "prismic_app/blog.html" %}
+{% load prismic_tags %}
+{% block content %}
+
+  <section id="post">
+    
+      <em class="infos">{% get_text post "blog-post.date" %} by {% get_text post "blog-post.author" %}</em>
+
+      <article>
+        {% get_html post "blog-post.body" %}
+      </article>
+
+      {% if related_posts %}
+        <h2>{% ifequal related_posts|length 1 %}This{% else %}These{% endifequal %} should interest you too</h2>
+
+        <ul>
+        {% for p in related_posts %}
+            <li>
+              <a href="{% url "prismic:blog_post" id=p.id slug=p.slug %}">{% get_title p "blog-post.body" %}</a>
+            </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if allow_comments %}
+
+        <h2>Comments</h2>
+
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+        <div class="fb-comments" data-href="{{ post_url }}" data-width="640" data-num-posts="10"></div>
+
+      {% endif %}
+
+  </section>
+
+  <aside>
+
+    {% if related_products %}
+      <h2>Some pastries you should love</h2>
+
+      <ul>
+        {% for product in related_products %}
+          <li>
+            <a href="{% url "prismic:product" id=product.id slug=product.slug %}
+              <img src="{% get_image product "product.image" "icon" %}"/>
+              <span>
+                  {% get_text product "product.name" "Product" %}
+              </span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+
+  </aside>
+
+{% endblock %}

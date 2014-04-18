@@ -31,8 +31,8 @@
       <nav>
         <ul>
           <li><a href="@routes.Application.blog(ref = ctx.maybeRef)">Home</a></li>
-          {% for key, label in categories.items %}
-            <li><a href="{% url "prismic:blog" %}?category={{ key }}">{{ label }}</a></li>
+          {% for category in categories %}
+            <li><a href="{% url "prismic:blog" %}?category={{ category }}">{{ category }}</a></li>
           {% endfor %}
         </ul>
       </nav>
