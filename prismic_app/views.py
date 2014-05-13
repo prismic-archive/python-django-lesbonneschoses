@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseNotFound
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from prismic_helper import PrismicHelper
@@ -14,14 +14,19 @@ product_categories = {
 }
 
 
-def link_resolver(document_link):
+def link_resolver(document):
     """
     Creates a local link to document.
 
     document_link -- Fragment.DocumentLink object
     """
-    return reverse('prismic:product',
-                   kwargs={'id': document_link.get_document_id(), 'slug': document_link.get_document_slug()})
+    print "link_resolver"
+    print document
+    if document.get_document_type:
+        if document.get_document_type() == "product":
+            return reverse('prismic:product',
+                           kwargs={'id': document.get_document_id(), 'slug': document.get_document_slug()})
+    return reverse('prismic:index')
 
 
 def index(request):
@@ -46,6 +51,30 @@ def about(request):
 
     about_doc = prismic.get_bookmark("about")
     return render(request, 'prismic_app/about.html', {'context': context, 'about': about_doc})
+
+
+def search(request):
+    prismic = PrismicHelper()
+    context = prismic.get_context()
+
+    query = request.GET.get('query')
+    if query is not None:
+        products = prismic.form("everything")\
+            .query("""[[:d = any(document.type, ["product", "selection"])][:d = fulltext(document, "{0}")]]""".format(query))\
+            .ref(context["ref"]).submit()
+        others = prismic.form("everything")\
+            .query("""[[:d = any(document.type, ["article", "blog-post", "job-offer", "store"])][:d = fulltext(document, "{0}")]]""".format(query))\
+            .ref(context["ref"]).submit()
+    else:
+        products = None
+        others = None
+        query = ""
+
+    return render(request, 'prismic_app/search.html', {'context': context, 'products': products, 'others': others, 'query': query})
+
+
+def selection(request):
+    return HttpResponseNotFound
 
 
 # -- Jobs

@@ -1,0 +1,126 @@
+{% extends "prismic_app/main.html" %}
+{% load prismic_tags %}
+{% block id %}search{% endblock %}
+{% block title %}Search{% endblock %}
+{% block content %}
+
+  <section>
+
+    <form action="{% url "prismic:search" %}" method="GET">
+      <input type="text" name="query" placeholder="Search anything" value="{{ query }}" autocomplete="off">
+      <input type="submit" value="Submit">
+    </form>
+
+  </section>
+
+  <section>
+
+    {% if products and products.total_results_size > 0 %}
+
+      <div id="product-results" class="products">
+
+        <h2>We have {{ products.total_results_size }} product(s) matching your request</h2>
+
+        <ul>
+          {% for product in products.documents %}
+
+            {% if product.type == "product" %}
+              <li>
+                <a href="{% url "prismic:product" id=product.id slug=product.slug %}">
+                  <img src="{% get_image product "product.image" "icon" %}">
+                  <span>{% get_text product "product.name" %}</span>
+                </a>
+              </li>
+            {% endif %}
+
+            {% if product.type == "selection" %}
+              <li>
+                <a href="{% url "prismic:selection" id=product.id slug=product.slug %}">
+                  <img src="{% get_image product "selection.image" "icon" %}">
+                  <span>{% get_text product "selection.name" %}</span>
+                </a>
+              </li>
+            {% endif %}
+
+          {% endfor %}
+        </ul>
+
+      </div>
+
+    {% endif %}
+
+    {% if others and others.total_results_size > 0 %}
+
+      <div id="other-results">
+
+        <h2>{{ others.total_results_size }} relevant article(s) in our Website</h2>
+
+        {% for other in others.documents %}
+
+          {% if other.type == "article" %}
+            <article>
+              <a href="{% link other %}">
+                <h3>{% get_text other "article.title" %}</h3>
+                <em>{% link other %}</em>
+                <!-- p>@excerpt(article.getText("article.content").getOrElse(""))</p -->
+              </a>
+            </article>
+          {% endif %}
+
+          {% if other.type == "store" %}
+            <article>
+              <a href="{% url "prismic:store" id=other.id slug=other.id %}">
+                <h3>Les Bonnes Choses Store – {% get_text other "store.name" %}</h3>
+                <em>{% url "prismic:store" id=other.id slug=other.id %}"</em>
+                <p>
+                  {% get_text other "store.address" %}
+                  {% get_text other "store.address2" %}
+                  {% get_text other "store.city" %}
+                  {% get_text other "store.zipcode" %}
+                  {% get_text other "store.country" %}
+                </p>
+              </a>
+            </article>
+          {% endif %}
+
+          {% if other.type == "job-offer" %}
+            <article>
+              <a href="{% url "prismic:job" id=other.id slug=other.slug %}">
+                <h3>Join us – {% get_text other "job-offer.name" %}</h3>
+                <em>{% url "prismic:job" id=other.id slug=other.slug %}</em>
+                <p>{% excerpt other "job-offer.profile" %}</p>
+              </a>
+            </article>
+          {% endif %}
+
+          {% if other.type == "blog-post" %}
+            <article>
+              <a href="{% url "prismic:blog_post" id=other.id slug=other.slug %}">
+                <h3>In our blog - {% get_title other "blog-post.body" %}</h3>
+                <em>{% url "prismic:blog_post" id=other.id slug=other.slug %}</em>
+                <p>{% excerpt other "article.content" %}</p>
+              </a>
+            </article>
+          {% endif %}
+
+        {% endfor %}
+
+      </div>
+
+    {% endif %}
+
+    {% if query != "" and products.total_results_size == 0 and others.total_results_size == 0 %}
+        <div id="no-results">
+
+          <h2>No results found</h2>
+
+          <p>
+            Do you want to browse our <a href="{% url "prismic:products" %}">products catalog</a>?
+          </p>
+
+        </div>
+    {% endif %}
+
+  </section>
+
+{% endblock %}
