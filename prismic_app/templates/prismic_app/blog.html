@@ -12,15 +12,10 @@
 
     <link rel="stylesheet" href="{% static "stylesheets/normalize.min.css" %}">
     <link rel="stylesheet" href="{% static "stylesheets/blog.css" %}">
-    <link rel="stylesheet" href="{% static "stylesheets/toolbar.css" %}">
 
     <script src="{% static "javascripts/modernizr-2.6.2.min.js" %}"></script>
   </head>
-  <body {% if context.hasPrivilegedAccess %}class="toolbar"{% endif %}>
-
-    {% if context.hasPrivilegedAccess %}
-    {% include "prismic_app/toolbar.html" %}
-    {% endif %}
+  <body>
 
     <header>
 
