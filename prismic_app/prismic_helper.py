@@ -6,14 +6,18 @@ from django.http import Http404
 
 class PrismicHelper(object):
 
-    def __init__(self, ref_id=None):
+    def __init__(self, request):
         self.api = prismic.get(
             settings.PRISMIC.get("api"), settings.PRISMIC.get("token"))
         self.link_resolver = views.link_resolver
         self.everything_form_name = "everything"
-
-        if ref_id is not None:
-            self.ref = ref_id
+        self.google_id = self.api.experiments.current()
+        preview_ref = request.COOKIES.get(prismic.PREVIEW_COOKIE)
+        experiment_ref = self.api.experiments.ref_from_cookie(request.COOKIES.get(prismic.EXPERIMENTS_COOKIE))
+        if preview_ref is not None:
+            self.ref = preview_ref
+        elif experiment_ref is not None:
+            self.ref = experiment_ref
         else:
             self.ref = self.api.get_master()
 

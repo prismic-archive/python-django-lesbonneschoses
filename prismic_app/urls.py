@@ -21,7 +21,9 @@ urlpatterns = patterns('',
                        url(r'^blog/(?P<id>[-_a-zA-Z0-9]{16})/(?P<slug>.*)', views.blog_post, name='blog_post'),
                        url(r'^blog/', views.blog, name='blog'),
 
-                       url(r'^search', views.search, name='search')
+                       url(r'^search', views.search, name='search'),
+
+                       url(r'^preview$', views.preview, name='preview')
 
                        )
 

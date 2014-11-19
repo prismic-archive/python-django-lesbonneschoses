@@ -1,7 +1,8 @@
 from django.http import Http404, HttpResponseNotFound
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from prismic_helper import PrismicHelper
+from prismic import PREVIEW_COOKIE
 import collections
 #import logging
 
@@ -26,11 +27,14 @@ def link_resolver(document):
         if document.get_document_type() == "product":
             return reverse('prismic:product',
                            kwargs={'id': document.get_document_id(), 'slug': document.get_document_slug()})
+        if document.get_document_type() == "blog-post":
+            return reverse('prismic:blog_post',
+                           kwargs={'id': document.get_document_id(), 'slug': document.get_document_slug()})
     return reverse('prismic:index')
 
 
 def index(request):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     products = prismic.form("products").ref(context["ref"]).submit().documents
@@ -46,7 +50,7 @@ def index(request):
 
 
 def about(request):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     about_doc = prismic.get_bookmark("about")
@@ -54,7 +58,7 @@ def about(request):
 
 
 def search(request):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     query = request.GET.get('query')
@@ -81,7 +85,7 @@ def selection(request):
 
 
 def jobs(request):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     jobs_doc = prismic.get_bookmark("jobs")
@@ -100,7 +104,7 @@ def jobs(request):
 
 
 def job(request, id, slug):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     return render(request, 'prismic_app/job_detail.html', {
@@ -121,7 +125,7 @@ PRODUCT_CATEGORIES = {
 
 
 def products(request):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     all_products = sorted(prismic.form("products").ref(context["ref"]).submit().documents,
@@ -130,7 +134,7 @@ def products(request):
 
 
 def product(request, id, slug):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     product = prismic.get_document(id)
@@ -161,7 +165,7 @@ WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", 
 
 
 def stores(request):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     all_stores = sorted(prismic.form("stores").ref(context["ref"]).submit().documents,
@@ -173,7 +177,7 @@ def stores(request):
 
 
 def store(request, id, slug):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     the_store = prismic.get_document(id)
@@ -197,7 +201,7 @@ BLOG_CATEGORIES = [
 
 
 def blog(request):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     category = request.GET.get('category')
@@ -215,7 +219,7 @@ def blog(request):
 
 
 def blog_post(request, id, slug):
-    prismic = PrismicHelper()
+    prismic = PrismicHelper(request)
     context = prismic.get_context()
 
     post = prismic.get_document(id)
@@ -231,3 +235,22 @@ def blog_post(request, id, slug):
         'allow_comments': post.get_text("blog-post.allow_comments") == "Yes",
         'post_url': request.build_absolute_uri(reverse('prismic:blog_post', args=[post.id, post.slug]))
     })
+
+
+# -- Previews
+
+
+def preview(request):
+    prismic = PrismicHelper(request)
+
+    token = request.GET.get('token')
+
+    if token is None:
+        raise Http404
+
+    url = prismic.api.preview_session(token, prismic.link_resolver, '/')
+    print "url is = " + url
+
+    response = redirect(url)
+    response.set_cookie(PREVIEW_COOKIE, token, max_age=1800, httponly=False)
+    return response
