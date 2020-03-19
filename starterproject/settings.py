@@ -157,3 +157,9 @@ PRISMIC = {
     # If specified this token is used for all "guest" requests
     "token": "MC5VZ2phOGRfbXFaOEl2UEpj.dO-_ve-_ve-_ve-_vSFRBzXvv71V77-977-9BO-_vVbvv71k77-9Cu-_ve-_vQTvv71177-9eQpcUE3vv70"
 }
+
+
+PRISMIC = {
+    "api": "http://akhil_ps.prismic.io/api",
+    "token": "1234567890"
+}
